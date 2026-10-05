@@ -15,14 +15,14 @@ module "master_node" { # Создаем виртуальные машины
   private_key         = var.private_key
 
   metadata = {
-    user-data          = data.template_file.cloudinit_master.rendered
+    user-data          = data.template_file.cloudinit.rendered
     serial-port-enable = 1
   }
 
 }
 
-data template_file "cloudinit_master" { # Создаем cloud-init файл
-  template = file("./cloud-init-master.yml")
+data template_file "cloudinit" { # Создаем cloud-init файл
+  template = file("./cloud-init.yml")
 
   vars = {
     username           = var.username

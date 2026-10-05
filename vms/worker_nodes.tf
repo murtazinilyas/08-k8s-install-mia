@@ -13,17 +13,8 @@ module "worker_node" { # Создаем виртуальные машины
   private_key        = var.private_key
 
   metadata = {
-    user-data          = data.template_file.cloudinit_worker.rendered
+    user-data          = data.template_file.cloudinit.rendered
     serial-port-enable = 1
   }
 
-}
-
-data template_file "cloudinit_worker" { # Создаем cloud-init файл
-  template = file("./cloud-init-worker.yml")
-
-  vars = {
-    username           = var.username
-    ssh_public_key     = file(var.public_key)
-  }
 }
