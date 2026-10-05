@@ -19,21 +19,6 @@ resource "yandex_vpc_subnet" "k8s_subnet" {
   v4_cidr_blocks = var.subnets[count.index].cidr
 }
 
-resource "yandex_vpc_gateway" "nat_gateway" {
-  name = var.env_name == null ? "${var.instance_name}-nat-gateway" : "${var.env_name}-${var.instance_name}-nat-gateway"
-  shared_egress_gateway {}
-}
-
-resource "yandex_vpc_route_table" "rt" {
-  name       = var.env_name == null ? "${var.instance_name}-rt" : "${var.env_name}-${var.instance_name}-rt"
-  network_id = yandex_vpc_network.k8s_vpc.id
-
-  static_route {
-    destination_prefix = "0.0.0.0/0"
-    gateway_id         = yandex_vpc_gateway.nat_gateway.id
-  }
-}
-
 resource "yandex_vpc_security_group" "k8s_sg" {
   name       = var.env_name == null ? "${var.instance_name}-sg" : "${var.env_name}-${var.instance_name}-sg" 
   network_id = yandex_vpc_network.k8s_vpc.id
