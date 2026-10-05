@@ -1,0 +1,26 @@
+[kube_control_plane]
+
+%{~ for i, m in master ~}
+${m["name"]}   ansible_host=${m["network_interface"][0]["nat_ip_address"]} ip=${m["network_interface"][0]["ip_address"]} etcd_member_name=etcd${i + 1}
+
+%{~ endfor ~}
+
+[etcd:children]
+kube_control_plane
+
+[kube_node]
+
+%{~ for i in workers ~}
+${i["name"]}   ansible_host=${i["network_interface"][0]["nat_ip_address"]} ip=${i["network_interface"][0]["ip_address"]}
+
+%{~ endfor ~}
+
+[kube_control_plane:vars]
+ansible_user=user
+ansible_ssh_private_key_file=/home/van/.ssh/id_ed25519
+ansible_become=true
+
+[kube_node:vars]
+ansible_user=user
+ansible_ssh_private_key_file=/home/van/.ssh/id_ed25519
+ansible_become=true
